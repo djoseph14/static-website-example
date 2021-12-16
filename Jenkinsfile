@@ -25,6 +25,24 @@ pipeline {
            }
        }
 
+        stage ('clean env and save artifact') {
+           agent any
+           environment{
+               PASSWORD = credentials('dockerhub_password')
+           }
+           steps {
+               script{
+                   sh '''
+                       docker login -u $USERNAME -p $PASSWORD
+                       docker push $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                       docker stop $CONTAINER_NAME || true
+                       docker rm $CONTAINER_NAME || true
+                       docker rmi $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                   '''
+               }
+           }
+       }
+
         
         stage('Deploy app on EC2-cloud Staging') {
             agent any
