@@ -85,9 +85,9 @@ pipeline {
                     catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
                         script{ 
 
-                            //timeout(time: 15, unit: "MINUTES") {
-                            //    input message: 'Do you want to approve the deploy in production?', ok: 'Yes'
-                            //}
+                            timeout(time: 15, unit: "MINUTES") {
+                                input message: 'Do you want to approve the deploy in production?', ok: 'Yes'
+                            }
 
                             sh'''
                                 ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name ${CONTAINER_NAME}-prod -d -p 8090:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
