@@ -2,7 +2,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "webapp"
-        IMAGE_TAG = "1.0"
+        IMAGE_TAG = "1.1"
         STAGING = "daniel-ajc-staging-env"
         PRODUCTION = "daniel-ajc-prod-env"
         USERNAME = "lianhuahayu"
@@ -19,7 +19,6 @@ pipeline {
            steps {
                script{
                    sh '''
-                        docker rmi $USERNAME/$IMAGE_NAME:$IMAGE_TAG || true
                         docker build -t $USERNAME/$IMAGE_NAME:$IMAGE_TAG .
                    '''
                }
@@ -57,7 +56,9 @@ pipeline {
            steps {
                script{
                    sh '''
-                       curl -Is http://localhost:8088 | head -n 1
+                       test = 'curl -Is http://localhost:8088 | head -n 1'
+                       if [ test == 'HTTP/1.1 200 OK' ]; then true; else false; fi
+
                    '''
                }
            }
@@ -93,7 +94,8 @@ pipeline {
            steps {
                script{
                    sh '''
-                       curl -Is http://localhost:8090 | head -n 1
+                       test = 'curl -Is http://localhost:8090 | head -n 1'
+                       if [ test == 'HTTP/1.1 200 OK' ]; then true; else false; fi
                    '''
                }
            }
