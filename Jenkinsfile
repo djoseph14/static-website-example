@@ -19,9 +19,6 @@ pipeline {
            steps {
                script{
                    sh '''
-                        rm -Rf static-website-example
-                        git clone https://github.com/djoseph14/static-website-example.git
-                        cd static-website-example
                         docker build -t $USERNAME/$IMAGE_NAME:$IMAGE_TAG .
                    '''
                }
@@ -36,8 +33,6 @@ pipeline {
            steps {
                script{
                    sh '''
-                       docker login -u $USERNAME -p $PASSWORD
-                       docker push $USERNAME/$IMAGE_NAME:$IMAGE_TAG
                        docker stop $CONTAINER_NAME || true
                        docker rm $CONTAINER_NAME || true
                        docker rmi $USERNAME/$IMAGE_NAME:$IMAGE_TAG
