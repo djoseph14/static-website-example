@@ -31,7 +31,7 @@ pipeline {
                        sleep 30
                        docker stop $CONTAINER_NAME || true
                        docker rm $CONTAINER_NAME || true
-                       docker run --name $CONTAINER_NAME -d -p 8080:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                       docker run --name $CONTAINER_NAME -d -p 8088:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
                        sleep 5
                    '''
                }
@@ -43,7 +43,7 @@ pipeline {
            steps {
                script{
                    sh '''
-                       curl http://localhost | grep -iq "200"
+                       curl http://localhost:8088 | grep -iq "200"
                    '''
                }
            }
@@ -82,7 +82,7 @@ pipeline {
                             //}
 
                             sh'''
-                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name $CONTAINER_NAME -d -p 8080:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name $CONTAINER_NAME -d -p 8088:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
                             '''
                         }
                     }
