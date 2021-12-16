@@ -59,8 +59,8 @@ pipeline {
                             //}
 
                             sh'''
-                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker stop ${CONTAINER_NAME}-staging
-                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker rm ${CONTAINER_NAME}-staging
+                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker stop ${CONTAINER_NAME}-staging || true
+                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker rm ${CONTAINER_NAME}-staging || true
                                 ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name ${CONTAINER_NAME}-staging -d -p 8088:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
                             '''
                         }
@@ -97,8 +97,8 @@ pipeline {
                             }
 
                             sh'''
-                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker stop ${CONTAINER_NAME}-prod
-                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker rm ${CONTAINER_NAME}-prod
+                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker stop ${CONTAINER_NAME}-prod || true
+                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker rm ${CONTAINER_NAME}-prod || true
                                 ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name ${CONTAINER_NAME}-prod -d -p 8090:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
                             '''
                         }
