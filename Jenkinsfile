@@ -19,11 +19,12 @@ pipeline {
            steps {
                script{
                    sh '''
-                    docker image rmi -f $USERNAME/$IMAGE_NAME:$IMAGE_TAG'
-                    docker build -t $USERNAME/$IMAGE_NAME:$IMAGE_TAG .'
-                    '''               
+                        rm -Rf static-website-example
+                        git clone https://github.com/djoseph14/static-website-example.git
+                        cd static-website-example
+                        docker build -t $USERNAME/$IMAGE_NAME:$IMAGE_TAG .
+                   '''
                }
-
            }
        }
 
