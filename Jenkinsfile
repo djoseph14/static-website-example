@@ -43,7 +43,7 @@ pipeline {
            steps {
                script{
                    sh '''
-                       curl http://localhost:8088 | grep -iq "200"
+                       curl http://localhost:8088
                    '''
                }
            }
