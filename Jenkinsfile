@@ -19,7 +19,7 @@ pipeline {
            steps {
                script{
                    sh '''
-                        docker rmi $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                        docker rmi $USERNAME/$IMAGE_NAME:$IMAGE_TAG || true
                         docker build -t $USERNAME/$IMAGE_NAME:$IMAGE_TAG .
                    '''
                }
