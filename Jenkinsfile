@@ -28,6 +28,7 @@ pipeline {
            steps {
                script{
                    sh '''
+                       sleep 30
                        docker stop $CONTAINER_NAME || true
                        docker rm $CONTAINER_NAME || true
                        docker run --name $CONTAINER_NAME -d -p 8080:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
