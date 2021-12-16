@@ -23,32 +23,6 @@ pipeline {
            }
        }
 
-       stage ('Run test container') {
-           agent any
-           steps {
-               script{
-                   sh '''
-                       sleep 30
-                       docker stop $CONTAINER_NAME || true
-                       docker rm $CONTAINER_NAME || true
-                       docker run --name $CONTAINER_NAME -d -p 8088:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
-                       sleep 5
-                   '''
-               }
-           }
-       }
-
-       stage ('Test application') {
-           agent any
-           steps {
-               script{
-                   sh '''
-                       curl http://localhost:8088
-                   '''
-               }
-           }
-       }
-
        stage ('clean env and save artifact') {
            agent any
            environment{
@@ -62,6 +36,40 @@ pipeline {
                        docker stop $CONTAINER_NAME || true
                        docker rm $CONTAINER_NAME || true
                        docker rmi $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                   '''
+               }
+           }
+       }
+        
+        stage('Deploy app on EC2-cloud Staging') {
+            agent any
+            when{
+               expression{ GIT_BRANCH == 'origin/master'}
+            }
+            steps{
+                withCredentials([sshUserPrivateKey(credentialsId: "ec2_prod_private_key", keyFileVariable: 'keyfile', usernameVariable: 'NUSER')]) {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                        script{ 
+
+                            //timeout(time: 15, unit: "MINUTES") {
+                            //    input message: 'Do you want to approve the deploy in production?', ok: 'Yes'
+                            //}
+
+                            sh'''
+                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name ${CONTAINER_NAME}-staging -d -p 8088:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+
+        stage ('Test application staging') {
+           agent any
+           steps {
+               script{
+                   sh '''
+                       curl -Is http://localhost:8088 | head -n 1
                    '''
                }
            }
@@ -82,7 +90,7 @@ pipeline {
                             //}
 
                             sh'''
-                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name $CONTAINER_NAME -d -p 8088:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
+                                ssh -o StrictHostKeyChecking=no -i ${keyfile} ${NUSER}@${EC2_PRODUCTION_HOST} docker run --name ${CONTAINER_NAME}-prod -d -p 8090:80 $USERNAME/$IMAGE_NAME:$IMAGE_TAG
                             '''
                         }
                     }
@@ -90,8 +98,16 @@ pipeline {
             }
         }
 
-
-
+        stage ('Test application prod') {
+           agent any
+           steps {
+               script{
+                   sh '''
+                       curl -Is http://localhost:8090 | head -n 1
+                   '''
+               }
+           }
+       }
 
     }
 
