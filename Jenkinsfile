@@ -18,9 +18,12 @@ pipeline {
            agent any
            steps {
                script{
-                   sh 'docker image rmi -f $USERNAME/$IMAGE_NAME:$IMAGE_TAG'
-                   sh 'docker build -t $USERNAME/$IMAGE_NAME:$IMAGE_TAG .'
+                   sh '''
+                    docker image rmi -f $USERNAME/$IMAGE_NAME:$IMAGE_TAG'
+                    docker build -t $USERNAME/$IMAGE_NAME:$IMAGE_TAG .'
+                    '''               
                }
+
            }
        }
 
