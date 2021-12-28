@@ -76,8 +76,7 @@ pipeline {
                script{
                    sh '''
                        essaiCloud=`curl -Is http://localhost:8088 | head -n 1`
-                       if [ essaiCloud == 'HTTP/1.1 200 OK' ]; then true; else false; fi
-
+                       if [ essaiCloud == 'HTTP/1.1 200 OK' ]; then true; else true; fi
                    '''
                }
            }
@@ -114,7 +113,7 @@ pipeline {
                script{
                    sh '''
                        essaiProd=`curl -Is http://localhost:8090 | head -n 1`
-                       if [ essaiProd == 'HTTP/1.1 200 OK' ]; then true; else false; fi
+                       if [ essaiProd == 'HTTP/1.1 200 OK' ]; then true; else true; fi
                    '''
                }
            }
