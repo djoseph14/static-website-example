@@ -2,12 +2,13 @@ pipeline {
 
     environment {
         IMAGE_NAME = "webapp"
-        IMAGE_TAG = "1.1"
+        IMAGE_TAG = "1.0"
         STAGING = "daniel-ajc-staging-env"
         PRODUCTION = "daniel-ajc-prod-env"
         USERNAME = "lianhuahayu"
         CONTAINER_NAME = "webapp"
-        EC2_PRODUCTION_HOST = "54.88.166.62"
+        EC2_STAGING_HOST = "44.201.45.200"
+        EC2_PRODUCTION_HOST = "34.200.238.191"
     }
 
     agent none
